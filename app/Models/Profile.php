@@ -11,6 +11,7 @@ use App\Models\User;
 class Profile extends Model
 {
     use HasFactory;
+    use SoftDeletes;
     protected $fillable =[
              'user_id',
             'first_name',

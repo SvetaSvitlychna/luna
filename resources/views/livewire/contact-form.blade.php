@@ -7,24 +7,30 @@
     <div class="container max-w-4xl mx-auto pb-10 px-12 md:px-0">
         <div class="flex flex-wrap justify-start item-start -mx-4">
             <div class="w-full w-1/2 p-4">
-                <form>
+                <form wire:submit.prevent="submit">
                     <fieldset  class="mb-4">
                         <label for="" class="block text-sm text-gray-700 pb-2">
                         Name
                         </label>
-                        <input type="text" class=" block w-full text-gray-600 border px-2 py-3 text-sm rounded">
+                        <input  wire:model='name' type="text" class=" block w-full text-gray-600 border px-2 py-3 text-sm rounded">
+                    @error('name')<span class="error">{{$message}}</span>
+                        @enderror
                     </fieldset>
                     <fieldset  class="mb-4">
                         <label for="" class="block text-sm text-gray-700 pb-2">
                             Email
                         </label>
-                        <input type="email" class=" block w-full text-gray-600 border px-2 py-3 text-sm rounded">
+                        <input wire:model="email" type="text" class=" block w-full text-gray-600 border px-2 py-3 text-sm rounded">
+                    @error('email') <span class="error">{{$message}}</span>
+                        @enderror
                     </fieldset>
                     <fieldset  class="mb-4">
                         <label for="" class="block text-sm text-gray-700 pb-2">
                             Message
                         </label>
-                        <textarea class="block w-full border-red-300 rounded py-2 px-3 text-sm text-gray-700"></textarea>
+                        <textarea wire:model="message" class="block w-full border-red-300 rounded py-2 px-3 text-sm text-gray-700"></textarea>
+                        @error('message') <span class="error">{{$message}}</span>
+                        @enderror
                     </fieldset>
                     <button class="text-sm py-2 px-3 text-white rounded" style="background-color: #0c0e10">Submit</button>
                 </form>

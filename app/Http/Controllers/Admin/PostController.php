@@ -42,7 +42,7 @@ class PostController extends Controller
         // });
         $title = "Posts";
         $subtitle ="Posts management";
-     $posts= Post::orderByRaw('id DESC')->paginate(15);;
+     $posts= Post::orderByRaw('id DESC')->paginate(15);
      return view('admin.posts.index', compact('posts', 'title', 'subtitle'));
         //dump($posts);
     }

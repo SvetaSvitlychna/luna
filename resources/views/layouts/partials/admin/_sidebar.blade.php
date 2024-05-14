@@ -12,7 +12,7 @@
                     <ul class="nav-dropdown-items">
                         <li class="nav-item">
                             <a
-                                href=""
+                                href="{{route('permissions.index')}}"
                                class="nav-link {{ request()->is('admin/permissions') || request()->is('admin/permissions/*') ? 'active' : '' }}">
                                 <i class="fa-fw fas fa-unlock-alt nav-icon">
 

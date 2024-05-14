@@ -3,7 +3,7 @@
 
 <div class="card">
     <div class="card-header">
-        Show Users
+        Show permission
     </div>
 
     <div class="card-body">
@@ -13,24 +13,17 @@
                         <tr>
 
 
-                            <th>User id</th>
-                            <th>Name</th>
-                            <th>First name</th>
-                            <th>Last name</th>
-                            <th>email</th>
-                            <th>verified</th>
+                            <th>permission id</th>
+                            <th>title</th>
                             <th>created at</th>
 
                         </tr>
                     </thead>
                     <tbody>
-                            <td>{{ $user->id}}</td>
-                            <td>{{ $user->name}}</td>
-                            <td>{{ $user->profile->first_name ?? ''}}</td>
-                            <td>{{ $user->profile->last_name ?? ''}}</td>
-                            <td>{{ $user->email}}</td>
-                            <td>{{ $user->email_verified_at}}</td>
-                            <td>{{ $user->created_at}}</td>
+
+                            <td>{{ $permission->id}}</td>
+                            <td>{{ $permission->title}}</td>
+                            <td>{{ $permission->created_at}}</td>
                     </tbody>
             </table>
             <a style="margin-top:20px;" class="btn btn-default" href="{{ url()->previous() }}">

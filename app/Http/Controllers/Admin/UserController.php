@@ -12,11 +12,14 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
-    protected $users;
+    protected $user;
 
-    public function __construct(User $users)
+    public function __construct(User $user)
     {
-$this->users=$users;
+$this->user=$user;
+
+        $this->middleware('auth');
+        $this->user = \Auth::user();
     }
     /**
      * Display a listing of the resource.
@@ -27,7 +30,8 @@ $this->users=$users;
     {
         $title='Admin';
         $subtitle='Users';
-        $users= DB::table('users')->get()->sortDesc();
+//        $users= DB::table('users')->get()->sortDesc();
+        $users= User::orderByRaw('id DESC')->paginate(15);
         return view('admin.users.index',compact('title',
             'subtitle', 'users'));
     }
@@ -55,7 +59,7 @@ return view('admin.users.create',compact('title'));
         $profile = new Profile();
 
         $user->profile('ip_address')->save($profile);
-        return redirect()->route('users')->withTyp('success')->withSuccess('User created successfully');
+        return redirect()->route('users')->withType('success')->withSuccess('User created successfully');
 
 //        $request->validate([
 //            'name'=>'unique:users|required|max:10|min:4',
@@ -82,13 +86,8 @@ return view('admin.users.create',compact('title'));
     public function show($id)
     {
 $title='Users';
-$user = User::all()->pluck('name','id');
 
-$user = User::join('profiles','profiles.user_id', '=', 'users', 'id')->
-select('users.*', 'profiles.first_name AS firstname', 'profiles.last_name As lastname')->
-    where('users.id', $id)->first();
-dd($user);
-$user = User::find($id);
+        $user = User::with('profile')->findOrFail($id);
 
 return view('admin.users.show', compact('title','user'));
     }
@@ -147,6 +146,24 @@ $subtitle='Edit User';
      */
     public function destroy($id)
     {
-        //
+        $user = User::find($id);
+        $user->delete();
+
+        return back()->withType('success')->withMessage('Moved to trash successfully');
+    }
+    public function trashed(){
+        $title = "User trashed list";
+        $users = User::onlyTrashed()->paginate(10);
+        $subtitle = "Menagement Trashed posts";
+        return view('admin.users.trashed', compact('title','subtitle', 'users' ));
+    }
+    public function restore($id)
+    {
+        User::withTrashed()->where('id',$id)->first()->restore();
+        return back()->withType('success')->withMessage('Restored Successfully ');
+    }
+    public function force($id){
+        User::withTrashed()->where('id',$id)->first()->forceDelete();
+        return back()->withType('success')->withMessage('Deleted successfully');
     }
 }

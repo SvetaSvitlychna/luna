@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Mail\Thanks;
+use Mail;
+use App\Http\Livewire\ContactForm;
+
 
 class ContactController extends Controller
 {
@@ -81,5 +85,17 @@ class ContactController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function sendThanksmail (ContactForm $request){
+
+
+        $email = 'manulwild1@gmail.com';
+       $data = [
+           'name'=>$request->name,
+           "body" =>$request->message,
+           'url' =>'http://luna.local'
+       ];
+       Mail::to($email)->send(new Thanks($data));
+       return view('contact.index');
     }
 }

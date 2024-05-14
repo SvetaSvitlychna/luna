@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Http\Request;
+use Illuminate\Foundation;
+use Illuminate\Auth;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,6 +29,7 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
 //Route::get('/', 'App\HTTP\Controllers\BlogController@Index');
 Route::get('/contact', 'App\Http\Controllers\ContactController@index')->name('contact');
 Route::get('/users', 'App\Http\Controllers\TestController@index');
@@ -40,10 +44,13 @@ Route::get('','App\Http\Controllers\BlogController@index' )->name('blog');
 // Route::get('show/{id}', 'App\Http\Controllers\BlogController@show')->name('show');
 // Route::get('resent','App\Http\Controllers\BlogController@resent')->name('resent');
 });
+
 Route::get('user/{id}', 'App\Http\Controllers\BlogController@postsByUser')->name('user');
-Route::get('/{slug}','App\Http\Controllers\BlogController@show')->name('show');
+
+
 Route::get('like/{id}', 'App\Http\Controllers\BlogController@like')->name('like');
 Route::get('category/{id}', 'App\Http\Controllers\BlogController@postByCategory')->name('category');
+
 // Route::namespace('App\Http\Controllers')->name('blog.')->prefix('blog')->group(function(){
 // // Route::get('','BlogController@index' )->name('blog');
 // // Route::get('show/{id}', 'BlogController@show')->name('show');
@@ -63,6 +70,7 @@ Route::get('category/{id}', 'App\Http\Controllers\BlogController@postByCategory'
 //     Route::resource('categories', 'CategoryController');
 
 // });
+
 Route::get('admin/categories', 'App\Http\Controllers\Admin\CategoryController@index')->name("categories");
 Route::get('admin/categories/create', 'App\Http\Controllers\Admin\CategoryController@create')->name('category.create');
 Route::post('admin/categories/create', 'App\Http\Controllers\Admin\CategoryController@store')->name('category.store');
@@ -113,10 +121,16 @@ Route::get('admin/users/trashed', 'App\Http\Controllers\Admin\UserController@tra
 Route::post('admin/users/restore/{id}', 'App\Http\Controllers\Admin\UserController@restore')->name('user.restore');
 Route::delete('admin/users/force/{id}', 'App\Http\Controllers\Admin\UserController@force')->name('user.force');
 
+//Route::resource('permissions', 'PermissionController');
 
-//Route::get('/contact','App\Http\Controllers\ContactController@index')->name('contact');
+
+Route::get('/contact','App\Http\Controllers\ContactController@index')->name('contact');
 
 Route::get('profiles', 'App\Http\Controllers\ProfileController@index')->name('profiles');
+
+Route::resource('permissions', 'App\Http\Controllers\Admin\PermissionController');
+
+
 
 Route::match(['get', 'post'], '/foo', function () {
     return "this is Foo";
@@ -128,10 +142,28 @@ Route::any('/bar', function () {
 
 });
 
+//Route::get('test', function (){
+//    return new \App\Mail\Reminder('1234567');
+//});
+Route::get('/thanks', 'App\Http\Controllers\ContactController@sendThanksmail')->name('thanks');
+Route::get('test', function (){
+    return new \App\Mail\Thanks();
+});
+Route::get('/email/verify', function (){
+    return view('auth/verify-email');
+})->middleware(['auth'])->name('verification.notice');
 
+Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest
+   $request){
+    $request->fulfill();
+    return redirect('/home');
+})->middleware(['auth','signed'])->name('verification.verify');
+Route::get('/{slug}','App\Http\Controllers\BlogController@show')->name('show');
 
-
-
+Route::post('/email/verification-notification', function(Request $request ){
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('status','verification-link-sent');
+})->middleware(['auth','throttle:6,1'])->name('verification.send');
 Route::fallback(function () {
     return "<h2>oooops... How you have trapped here?</h>";
 });

@@ -13,7 +13,7 @@
 
     <div class="card">
         <div class="card-header">
-            Posts list
+            Users list
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -26,7 +26,7 @@
                         <th width="150">email_verified_at</th>
                         <th width="150">actions</th>
                     </tr></thead>
-                    <tbody>
+                    <tr>
                     @foreach($users as $user)
                         <tr data-enty-id="{{$user->id}}"></tr>
                         <td style="text-align: center;"width="50">{{$user->id ?? ''}}</td>
@@ -38,19 +38,20 @@
                             <a href="{{route('user.show',$user->id)}}" class="btn btn-info ">Show</a>
                             <a href="{{route('user.edit',$user->id)}}" class="btn btn-primary ">Edit</a>
                             <form method='POST' action="{{route('user.delete', $user->id)}}"
-                                  style="display:inline-block;" onsubmit="return confirm('Are you sure?');">
+                                  style="display:inline;-block;" onsubmit="return confirm('Are you sure?');">
 
                                 @csrf
                                 @method('DELETE')
 
-                                <input type='submit' class="btn btn-danger" value="Delete">
+                                <input type='submit' class="btn btn-xs btn-danger" value="Delete">
                             </form>
-                        </td></tr>
+                        </td>
+                    </tr>
                     @endforeach
                     </tbody>
 
                 </table>
-{{--                {{$users->links()}}--}}
+                {{$users->links()}}
             </div>
         </div>
     </div>
